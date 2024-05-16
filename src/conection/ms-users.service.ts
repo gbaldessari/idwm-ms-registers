@@ -7,16 +7,16 @@ export class MsUsersService {
   constructor(private httpService: HttpService) {}
 
   getAccessToken(token: string) {
-    console.log("el token es "+token)
     return this.httpService
-      .post(`${process.env.APP_MS_USERS_URL}/auth/verify-token`, token, {
+      .post(`${process.env.APP_MS_USERS_URL}/auth/verify-token`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       .pipe(
         map((response) => {
-          return response.data.id;
+          console.log(response.data)
+          return response.data;
         }),
       );
   }
