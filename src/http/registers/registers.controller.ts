@@ -7,8 +7,8 @@ export class RegistersController {
   constructor(private readonly registersService: RegistersService) {}
 
   @Post('/create-register')
-  createRegister(@Body() createRegisterDto: CreateRegisterDto) {
-    return this.registersService.createRegister(createRegisterDto);
+  async createRegister(@Body() createRegisterDto: CreateRegisterDto) {
+    return await this.registersService.createRegister(createRegisterDto);
   }
 
   @Get('get-registers')

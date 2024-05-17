@@ -18,8 +18,8 @@ export class RegistersService {
   ) {}
 
   async createRegister(createRegisterDto: CreateRegisterDto) {
+    
     if(!createRegisterDto.token) throw new Error('Token is required');
-
     const { id } = await this.msUsersService.getAccessToken(
       createRegisterDto.token).toPromise(); 
 
@@ -35,7 +35,9 @@ export class RegistersService {
           const register: Register = this.registerRepository.create(createRegister);
           await transactionalEntityManager.save(register);
         } catch (error: unknown) {
+          
           return throwHttpException(
+            
             HttpStatus.INTERNAL_SERVER_ERROR,
             await this.i18n.translate('http.ERROR_TRX'),
             { error },
@@ -44,7 +46,7 @@ export class RegistersService {
       },
     );
 
-    return {message: this.i18n.translate('http.SUCCESS_CREATED')}
+    return id;
 
   }
 
