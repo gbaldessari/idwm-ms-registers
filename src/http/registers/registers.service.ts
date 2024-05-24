@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, EntityManager, Repository } from 'typeorm';
@@ -18,26 +23,26 @@ export class RegistersService {
   ) {}
 
   async createRegister(createRegisterDto: CreateRegisterDto) {
-    
-    if(!createRegisterDto.token) throw new Error('Token is required');
-    const { id } = await this.msUsersService.getAccessToken(
-      createRegisterDto.token).toPromise(); 
+    if (!createRegisterDto.token) throw new Error('Token is required');
+    const { id } = await this.msUsersService
+      .getAccessToken(createRegisterDto.token)
+      .toPromise();
 
     console.log(id);
 
     const createRegister: Register = {
-      userId: id
-    }
+      userId: id,
+      timeExit: undefined,
+    };
 
     await this.connection.transaction(
       async (transactionalEntityManager: EntityManager): Promise<void> => {
         try {
-          const register: Register = this.registerRepository.create(createRegister);
+          const register: Register =
+            this.registerRepository.create(createRegister);
           await transactionalEntityManager.save(register);
         } catch (error: unknown) {
-          
           return throwHttpException(
-            
             HttpStatus.INTERNAL_SERVER_ERROR,
             await this.i18n.translate('http.ERROR_TRX'),
             { error },
@@ -47,19 +52,69 @@ export class RegistersService {
     );
 
     return id;
-
   }
 
-  findAll() {
-    return this.registerRepository.find();
+  async createExit(userId: number) {
+    const today = new Date().toLocaleDateString();
+
+    await this.registerRepository.manager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        try {
+          const registerToUpdate = await transactionalEntityManager.findOne(
+            Register,
+            {
+              where: {
+                userId,
+                date: today,
+              },
+            },
+          );
+
+          if (!registerToUpdate) {
+            throw new BadRequestException('No existe registro hoy');
+          }
+
+          registerToUpdate.timeExit = new Date().toLocaleTimeString();
+        } catch (e) {
+          throw new InternalServerErrorException('Error al marcar salida');
+        }
+      },
+    );
   }
 
-  findOne(id: number) {
-    
+  // async findRegisterByUserId(userId: number) {
+  //   return await this.registerRepository.findOneBy({
+  //     userId,
+  //   });
+  // }
+
+  async findRegistersByUserId(userId: number) {
+    return await this.registerRepository.findBy({ userId });
   }
 
-  remove(id: number) {
-    
+  async findRegistersByRangeTimeAndUserId(
+    userId: number,
+    dateInit: string,
+    dateEnd: string,
+  ) {
+    const registers: Promise<Register[]> = this.findRegistersByUserId(userId);
+    return registers.then((registers) =>
+      registers.filter(
+        (register) =>
+          register.date &&
+          register.date >= dateInit &&
+          register.date <= dateEnd,
+      ),
+    );
   }
 
+  async findAll() {
+    return await this.registerRepository.find();
+  }
+
+  async findOne(id: number) {
+    return await this.registerRepository.findOneBy({ id });
+  }
+
+  remove(id: number) {}
 }

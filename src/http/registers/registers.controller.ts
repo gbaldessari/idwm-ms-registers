@@ -21,6 +21,19 @@ export class RegistersController {
     return this.registersService.findOne(+id);
   }
 
+  @Get('get-registers-by-rangeData-and-id')
+  findRegisters(
+    @Param('id') id: number,
+    @Param('dateInit') dataInit: string,
+    @Param('dateEnd') dataEnd: string,
+  ) {
+    return this.registersService.findRegistersByRangeTimeAndUserId(
+      id,
+      dataInit,
+      dataEnd,
+    );
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.registersService.remove(+id);
