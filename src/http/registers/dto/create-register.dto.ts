@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRegisterDto {
   @ApiProperty({
-    description: 'Token to verify the user',
+    description: 'Token to mark the user entry or exit',
   })
   @IsNotEmpty()
   token?: string;

@@ -17,7 +17,7 @@ export class Register {
   @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   date?: string;
 
-  @Column({ type: 'time', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'time', default: () => 'CURRENT_TIME' })
   timeEntry?: string;
 
   @Column({ type: 'time', nullable: true })
