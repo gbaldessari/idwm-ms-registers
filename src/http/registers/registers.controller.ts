@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Query} from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import {GetRegistersByRangeDateDto} from "./dto/get-registers-by-range-date.dto";
@@ -23,9 +23,9 @@ export class RegistersController {
     return this.registersService.findOne(+id);
   }
 
-  @Get('/get-registers-by-rangeData')
+  @Post('/get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
-  async findRegisters(@Query() params: GetRegistersByRangeDateDto) {
+  async findRegisters(@Body() params: GetRegistersByRangeDateDto) {
     return await this.registersService.findRegistersByRangeTime(
         params.token,
         params.startDate,
