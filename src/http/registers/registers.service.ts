@@ -28,11 +28,22 @@ export class RegistersService {
       userId: id,
       timeExit: undefined,
     };
+    const today = new Date().toLocaleDateString().split('/').reverse().join('-');
 
     await this.connection.transaction(
+
         async (transactionalEntityManager: EntityManager): Promise<void> => {
           try {
             const register: Register = this.registerRepository.create(createRegister);
+            const registerToUpdate = await transactionalEntityManager.findOne(Register, {
+              where: {
+                userId: id,
+                date: today,
+              },
+            });
+            if(registerToUpdate){
+                throw new BadRequestException('Already exist a register of entry today');
+            }
             await transactionalEntityManager.save(register);
           } catch (error: unknown) {
             return throwHttpException(
