@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { map } from 'rxjs/operators';
+import {Observable} from "rxjs";
 
 @Injectable()
 export class MsUsersService {
@@ -24,4 +25,5 @@ export class MsUsersService {
         }),
       );
   }
+
 }
