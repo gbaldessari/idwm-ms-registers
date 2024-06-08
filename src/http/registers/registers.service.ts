@@ -71,7 +71,7 @@ export class RegistersService {
             });
 
             if (!registerToUpdate) {
-              throw new BadRequestException('Not exist register today');
+              throw new BadRequestException('You have not yet registered your entry today.');
             }
 
             if (registerToUpdate.timeExit !== null) {
@@ -97,6 +97,8 @@ export class RegistersService {
   const { id } = await this.msUsersService
       .getAccessToken(createRegisterDto.token)
       .toPromise();
+
+  if(id == null || isNaN(id)) throw new Error('User id not found');
 
   if (createRegisterDto.isEntry) {
     return this.registerEntry(id);
@@ -188,6 +190,23 @@ export class RegistersService {
         date: Between(startDate, endDate)
       }
     });
+
+    return registers;
+  }
+
+  async adminFindRegistersByRangeTime(token?: string,idToFind?: number, startDate?: string, endDate?: string ) {
+    if (!token) throw new BadRequestException('Token is required');
+    if (!startDate || !endDate) throw new BadRequestException('startDate y endDate is required');
+
+    const registers: Register[] = await this.registerRepository.find({
+      where: {
+        userId: idToFind,
+        date: Between(startDate, endDate)
+      }
+    });
+    if(registers.length==0){
+      throw new Error("not found registers");
+    }
 
     return registers;
   }
