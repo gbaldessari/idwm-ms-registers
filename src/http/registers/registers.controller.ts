@@ -2,7 +2,7 @@ import {Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Us
 import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import {GetRegistersByRangeDateDto} from "./dto/get-registers-by-range-date.dto";
-import {GetAdminRegistersByRangeDateDto} from "./dto/get-admin-registers-by-range-date.dto";
+import {AdminGetRegistersByRangeDateDto} from "./dto/admin-get-registers-by-range-date.dto";
 import {IsAdminGuard} from "./guards/isAdmin.guard";
 
 @Controller('registers')
@@ -34,10 +34,10 @@ export class RegistersController {
         params.endDate);
   }
 
-  @Post('/get-admin-registers-by-rangeData')
+  @Post('/admin-get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   @UseGuards(IsAdminGuard)
-  async adminFindRegisters(@Body() params: GetAdminRegistersByRangeDateDto) {
+  async adminFindRegisters(@Body() params: AdminGetRegistersByRangeDateDto) {
     return await this.registersService.adminFindRegistersByRangeTime(
         params.token,
         params.id,
