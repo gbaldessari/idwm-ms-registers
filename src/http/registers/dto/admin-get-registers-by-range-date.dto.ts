@@ -1,6 +1,6 @@
 import {IsNotEmpty, IsString, IsDateString, IS_NUMBER} from 'class-validator';
 
-export class GetAdminRegistersByRangeDateDto {
+export class AdminGetRegistersByRangeDateDto {
     @IsNotEmpty()
     @IsString()
     token?: string;
