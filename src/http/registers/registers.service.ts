@@ -125,8 +125,7 @@ export class RegistersService {
     return registers;
   }
 
-  async adminFindRegistersByRangeTime(token?: string,idToFind?: number, startDate?: string, endDate?: string ) {
-    if (!token) throw new BadRequestException('Token is required');
+  async adminFindRegistersByRangeTime(idToFind?: number, startDate?: string, endDate?: string) {
     if (!startDate || !endDate) throw new BadRequestException('startDate y endDate is required');
 
     const registers: Register[] = await this.registerRepository.find({
@@ -135,8 +134,9 @@ export class RegistersService {
         date: Between(startDate, endDate)
       }
     });
-    if(registers.length===0){
-      throw new Error("not found registers");
+
+    if (registers.length === 0) {
+      return [];
     }
 
     return registers;

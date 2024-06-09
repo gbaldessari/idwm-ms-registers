@@ -36,14 +36,13 @@ export class RegistersController {
 
   @Post('/admin-get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
-  @UseGuards(IsAdminGuard)
   async adminFindRegisters(@Body() params: AdminGetRegistersByRangeDateDto) {
     return await this.registersService.adminFindRegistersByRangeTime(
-        params.token,
-        params.id,
-        params.startDate,
-        params.endDate);
-  }
+      params.id,
+      params.startDate,
+      params.endDate
+    );
+  }  
 
   @Delete(':id')
   remove(@Param('id') id: string) {

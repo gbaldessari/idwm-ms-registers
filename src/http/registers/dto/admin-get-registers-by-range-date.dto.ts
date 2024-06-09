@@ -1,18 +1,14 @@
-import {IsNotEmpty, IsString, IsDateString, IS_NUMBER} from 'class-validator';
+import { IsNotEmpty, IsString, IsDateString } from 'class-validator';
 
 export class AdminGetRegistersByRangeDateDto {
-    @IsNotEmpty()
-    @IsString()
-    token?: string;
+  @IsNotEmpty()
+  id!: number;
 
-    @IsNotEmpty()
-    id?: number;
+  @IsNotEmpty()
+  @IsDateString()
+  startDate!: string;
 
-    @IsNotEmpty()
-    @IsDateString()
-    startDate?: string;
-
-    @IsNotEmpty()
-    @IsDateString()
-    endDate?: string;
+  @IsNotEmpty()
+  @IsDateString()
+  endDate!: string;
 }
