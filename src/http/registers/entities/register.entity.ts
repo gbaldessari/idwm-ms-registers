@@ -35,11 +35,7 @@ export class Register {
 
   @Column({
     type: 'boolean',
-<<<<<<< Updated upstream
     default: () => "FALSE",
-=======
-    default: () => 'FALSE',
->>>>>>> Stashed changes
   })
   isAdminEdited?: boolean;
 

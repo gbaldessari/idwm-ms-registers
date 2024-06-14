@@ -1,9 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsDateString } from 'class-validator';
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 export class UpdateEndRegisterDto {
     @ApiProperty({
