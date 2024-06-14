@@ -35,7 +35,7 @@ export class Register {
 
   @Column({
     type: 'boolean',
-    default: () => false,
+    default: () => "FALSE",
   })
   isAdminEdited?: boolean;
 

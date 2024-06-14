@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsDateString } from 'class-validator';
 
 export class UpdateEndRegisterDto {
     @ApiProperty({
         example: '5f8b9a2b-6b1e-4e9f-8e5f-9f1e8b6a2b5f',
         description: 'Id del registro',
     })
-    @IsString()
     @IsNotEmpty()
     id?: number;
 
