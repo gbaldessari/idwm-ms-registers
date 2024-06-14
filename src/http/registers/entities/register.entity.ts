@@ -35,7 +35,11 @@ export class Register {
 
   @Column({
     type: 'boolean',
+<<<<<<< Updated upstream
     default: () => "FALSE",
+=======
+    default: () => 'FALSE',
+>>>>>>> Stashed changes
   })
   isAdminEdited?: boolean;
 
@@ -43,12 +47,24 @@ export class Register {
     type: 'float',
     nullable: true,
   })
-    latitude?: number;
+    latitudeStart?: number;
 
   @Column({
     type: 'float',
     nullable: true,
   })
-    longitude?: number;
+    longitudeStart?: number;
+
+  @Column({
+    type: 'float',
+    nullable: true,
+  })
+  latitudeEnd?: number;
+
+  @Column({
+    type: 'float',
+    nullable: true,
+  })
+  longitudeEnd?: number;
 
 }

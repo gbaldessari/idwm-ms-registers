@@ -27,6 +27,8 @@ export class RegistersService {
     const createRegister: Register = {
       userId: id,
       timeExit: undefined,
+      latitudeStart: latitude,
+      longitudeStart: longitude,
     };
     const today = new Date().toLocaleDateString().split('/').reverse().join('-');
 
@@ -39,8 +41,6 @@ export class RegistersService {
               where: {
                 userId: id,
                 date: today,
-                latitude: latitude,
-                longitude: longitude,
               },
             });
             if(registerToUpdate){
@@ -69,8 +69,6 @@ export class RegistersService {
               where: {
                 userId: id,
                 date: today,
-                latitude: latitude,
-                longitude: longitude,
               },
             });
 
@@ -83,6 +81,8 @@ export class RegistersService {
             }
 
             registerToUpdate.timeExit = new Date().toLocaleTimeString('es-ES', { hour12: false });
+            registerToUpdate.latitudeEnd = latitude;
+            registerToUpdate.longitudeEnd = longitude;
 
             await transactionalEntityManager.update(Register, registerToUpdate.id, registerToUpdate);
           } catch (e) {
@@ -178,7 +178,7 @@ export class RegistersService {
   }
 
   async updateEndRegister(endDate?: string, id?: number) {
-    if(!endDate) throw new BadRequestException('startDate is required');
+    if(!endDate) throw new BadRequestException('endDate is required');
     if(!id) throw new BadRequestException('id is required');
 
     try {
