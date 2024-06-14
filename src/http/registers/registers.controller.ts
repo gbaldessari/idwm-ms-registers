@@ -4,6 +4,8 @@ import { CreateRegisterDto } from './dto/create-register.dto';
 import {GetRegistersByRangeDateDto} from "./dto/get-registers-by-range-date.dto";
 import {AdminGetRegistersByRangeDateDto} from "./dto/admin-get-registers-by-range-date.dto";
 import {IsAdminGuard} from "./guards/isAdmin.guard";
+import {UpdateStartRegisterDto} from "./dto/update-start-register.dto";
+import {UpdateEndRegisterDto} from "./dto/update-end-register.dto";
 
 @Controller('registers')
 export class RegistersController {
@@ -42,7 +44,24 @@ export class RegistersController {
       params.startDate,
       params.endDate
     );
-  }  
+  }
+
+  @Post('/update-start-register')
+  @UsePipes(ValidationPipe)
+  async updateStartRegister(@Body() params: UpdateStartRegisterDto) {
+    return await this.registersService.updateStartRegister(
+        params.startDate,
+        params.id);
+  }
+
+  @Post('/update-end-register')
+  @UsePipes(ValidationPipe)
+  async updateEndRegister(@Body() params: UpdateEndRegisterDto) {
+    return await this.registersService.updateEndRegister(
+        params.endDate,
+        params.id);
+  }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

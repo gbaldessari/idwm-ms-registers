@@ -23,7 +23,7 @@ export class RegistersService {
     private readonly i18n: I18nService,
   ) {}
 
-  async registerEntry(id: number) {
+  async registerEntry(id: number, latitude: number, longitude: number) {
     const createRegister: Register = {
       userId: id,
       timeExit: undefined,
@@ -39,6 +39,8 @@ export class RegistersService {
               where: {
                 userId: id,
                 date: today,
+                latitude: latitude,
+                longitude: longitude,
               },
             });
             if(registerToUpdate){
@@ -57,7 +59,7 @@ export class RegistersService {
     return id;
   }
 
-  async registerExit(id: number) {
+  async registerExit(id: number, latitude: number, longitude: number) {
     const today = new Date().toLocaleDateString().split('/').reverse().join('-');
 
     await this.connection.transaction(
@@ -67,6 +69,8 @@ export class RegistersService {
               where: {
                 userId: id,
                 date: today,
+                latitude: latitude,
+                longitude: longitude,
               },
             });
 
@@ -99,11 +103,14 @@ export class RegistersService {
       .toPromise();
 
   if(id == null || isNaN(id)) throw new Error('User id not found');
+  if(createRegisterDto.isEntry == null) throw new Error('isEntry is required');
+  if(createRegisterDto.latitude == null) throw new Error('latitude is required');
+  if(createRegisterDto.longitude == null) throw new Error('longitude is required');
 
   if (createRegisterDto.isEntry) {
-    return this.registerEntry(id);
+    return this.registerEntry(id, createRegisterDto.latitude, createRegisterDto.longitude);
   } else {
-    return this.registerExit(id);
+    return this.registerExit(id, createRegisterDto.latitude, createRegisterDto.longitude);
   }
 }
 
@@ -156,4 +163,31 @@ export class RegistersService {
 
   remove(id: number) {}
 
+  async updateStartRegister(startDate?: string, id?: number) {
+    if(!startDate) throw new BadRequestException('startDate is required');
+    if(!id) throw new BadRequestException('id is required');
+
+    try {
+      await this.registerRepository.update(id, {
+        timeEntry: startDate,
+        isAdminEdited: true,
+      });
+    } catch (e) {
+        throw new Error('Error updating start register');
+    }
+  }
+
+  async updateEndRegister(endDate?: string, id?: number) {
+    if(!endDate) throw new BadRequestException('startDate is required');
+    if(!id) throw new BadRequestException('id is required');
+
+    try {
+      await this.registerRepository.update(id, {
+        timeExit: endDate,
+        isAdminEdited: true,
+      });
+    } catch (e) {
+      throw new Error('Error updating start register');
+    }
+  }
 }

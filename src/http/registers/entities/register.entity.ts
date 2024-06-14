@@ -32,4 +32,23 @@ export class Register {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt?: string;
+
+  @Column({
+    type: 'boolean',
+    default: () => false,
+  })
+  isAdminEdited?: boolean;
+
+  @Column({
+    type: 'float',
+    nullable: true,
+  })
+    latitude?: number;
+
+  @Column({
+    type: 'float',
+    nullable: true,
+  })
+    longitude?: number;
+
 }

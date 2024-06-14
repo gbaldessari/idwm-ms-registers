@@ -10,4 +10,10 @@ export class CreateRegisterDto {
 
   @IsNotEmpty()
   isEntry?: boolean;
+
+  @IsNotEmpty()
+  latitude?: number;
+
+  @IsNotEmpty()
+  longitude?: number;
 }
