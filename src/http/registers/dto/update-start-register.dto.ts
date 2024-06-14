@@ -7,9 +7,9 @@ export class UpdateStartRegisterDto {
         description: 'Token to mark the user entry or exit',
     })
     @IsNotEmpty()
-    id?: number;
+    id!: number;
 
     @IsNotEmpty()
     @IsDateString()
-    startDate?: string;
+    startDate!: string;
 }

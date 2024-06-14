@@ -6,9 +6,9 @@ export class UpdateEndRegisterDto {
         description: 'Id del registro',
     })
     @IsNotEmpty()
-    id?: number;
+    id!: number;
 
     @IsNotEmpty()
     @IsDateString()
-    endDate?: string;
+    endDate!: string;
 }
