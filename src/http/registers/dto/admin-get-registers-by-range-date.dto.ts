@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import {ApiProperty} from "@nestjs/swagger";
 
 export class AdminGetRegistersByRangeDateDto {
@@ -16,7 +16,7 @@ export class AdminGetRegistersByRangeDateDto {
     example: '2024-05-01',
   })
   @IsNotEmpty()
-  @IsDateString()
+  @IsString()
   startDate!: string;
 
   @ApiProperty({
@@ -25,6 +25,6 @@ export class AdminGetRegistersByRangeDateDto {
     example: '2024-06-14',
   })
   @IsNotEmpty()
-  @IsDateString()
+  @IsString()
   endDate!: string;
 }

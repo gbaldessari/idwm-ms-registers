@@ -107,7 +107,7 @@ export class RegistersService {
   if(createRegisterDto.latitude == null) throw new Error('latitude is required');
   if(createRegisterDto.longitude == null) throw new Error('longitude is required');
 
-  if (createRegisterDto.isEntry==true){
+  if (createRegisterDto.isEntry){
     return this.registerEntry(id, createRegisterDto.latitude, createRegisterDto.longitude);
   } else {
     return this.registerExit(id, createRegisterDto.latitude, createRegisterDto.longitude);
