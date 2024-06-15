@@ -9,7 +9,7 @@ export class UpdateStartRegisterDto {
         example: 8,
     })
     @IsNotEmpty()
-    id?: number;
+    id!: number;
 
     @ApiProperty({
         description: 'Start date of the register',

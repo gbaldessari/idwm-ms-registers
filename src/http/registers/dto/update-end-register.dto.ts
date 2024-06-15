@@ -8,7 +8,7 @@ export class UpdateEndRegisterDto {
         example: 8,
     })
     @IsNotEmpty()
-    id?: number;
+    id!: number;
 
     @ApiProperty({
         description: 'Start date of the register',
@@ -18,4 +18,5 @@ export class UpdateEndRegisterDto {
     @IsNotEmpty()
     @IsString()
     endDate?: string;
+
 }
