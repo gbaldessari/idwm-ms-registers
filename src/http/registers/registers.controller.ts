@@ -62,9 +62,4 @@ export class RegistersController {
         params.id);
   }
 
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.registersService.remove(+id);
-  }
 }

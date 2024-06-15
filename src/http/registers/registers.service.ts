@@ -107,7 +107,7 @@ export class RegistersService {
   if(createRegisterDto.latitude == null) throw new Error('latitude is required');
   if(createRegisterDto.longitude == null) throw new Error('longitude is required');
 
-  if (createRegisterDto.isEntry) {
+  if (createRegisterDto.isEntry==true){
     return this.registerEntry(id, createRegisterDto.latitude, createRegisterDto.longitude);
   } else {
     return this.registerExit(id, createRegisterDto.latitude, createRegisterDto.longitude);
@@ -161,8 +161,6 @@ export class RegistersService {
     return await this.registerRepository.findOneBy({ id });
   }
 
-  remove(id: number) {}
-
   async updateStartRegister(startDate?: string, id?: number) {
     if(!startDate) throw new BadRequestException('startDate is required');
     if(!id) throw new BadRequestException('id is required');
@@ -175,6 +173,7 @@ export class RegistersService {
     } catch (e) {
         throw new Error('Error updating start register');
     }
+    return startDate;
   }
 
   async updateEndRegister(endDate?: string, id?: number) {
