@@ -66,9 +66,4 @@ export class RegistersController {
     return await this.registersService.updateEndRegister(params.endDate, params.id);
   }
 
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.registersService.remove(+id);
-  }
 }

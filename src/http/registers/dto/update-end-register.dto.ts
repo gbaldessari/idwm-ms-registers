@@ -1,14 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsDateString } from 'class-validator';
+import {IsNotEmpty, IsString} from 'class-validator';
 
 export class UpdateEndRegisterDto {
     @ApiProperty({
-        description: 'Id del registro',
+        description: 'Token to mark the user entry or exit',
+        type: Number,
+        example: 8,
     })
     @IsNotEmpty()
     id!: number;
 
+    @ApiProperty({
+        description: 'Start date of the register',
+        type: String,
+        example: 'YYYY-MM-DDThh:mm:ssTZD',
+    })
     @IsNotEmpty()
-    @IsDateString()
-    endDate!: string;
+    @IsString()
+    endDate?: string;
+
 }
