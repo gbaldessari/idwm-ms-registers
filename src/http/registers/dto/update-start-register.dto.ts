@@ -16,7 +16,7 @@ export class UpdateStartRegisterDto {
         type: String,
         example: 'YYYY-MM-DDThh:mm:ssTZD',
     })
-    @IsNotEmpty()
     @IsString()
-    startDate?: string;
+    @IsNotEmpty()
+    startDate!: string;
 }

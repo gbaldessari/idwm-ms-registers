@@ -66,4 +66,16 @@ export class RegistersController {
     return await this.registersService.updateEndRegister(params.endDate, params.id);
   }
 
+  @Post('/get-statistics-user-per-day')
+  @UsePipes(ValidationPipe)
+  async getStatisticUserPerDay(@Body() params: AdminGetRegistersByRangeDateDto) {
+    return await this.registersService.getStatisticUserPerDay(params.id, params.startDate, params.endDate);
+  }
+
+  @Post('/get-statistics-user-per-month')
+  @UsePipes(ValidationPipe)
+  async getStatisticUserPerMonth(@Body() params: AdminGetRegistersByRangeDateDto) {
+    return await this.registersService.getStatisticUserPerMonth(params.id, params.startDate, params.endDate);
+  }
+
 }

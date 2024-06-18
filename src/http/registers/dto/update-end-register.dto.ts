@@ -17,6 +17,6 @@ export class UpdateEndRegisterDto {
     })
     @IsNotEmpty()
     @IsString()
-    endDate?: string;
+    endDate!: string;
 
 }

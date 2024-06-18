@@ -260,6 +260,35 @@ export class RegistersService {
     }
   }
 
+async getStatisticUserPerDay(id: number, startDate: string, endDate: string) {
+    if (!startDate || !endDate) throw new BadRequestException('startDate y endDate is required');
+    if (!id) throw new BadRequestException('id is required');
+
+    const registers = await this.registerRepository
+        .createQueryBuilder("register")
+        .select(["register"])
+        .addSelect("EXTRACT(EPOCH FROM (register.timeExit - register.timeEntry))/3600", "hoursDifference")
+        .where("register.userId = :id", { id })
+        .andWhere("register.date BETWEEN :start AND :end", { start: startDate, end: endDate })
+        .getRawMany();
+
+    return registers;
+}
+
+    async getStatisticUserPerMonth(id: number, startDate: string, endDate: string) {
+        if (!startDate || !endDate) throw new BadRequestException('startDate y endDate is required');
+        if (!id) throw new BadRequestException('id is required');
+
+        const registers: Register[] = await this.registerRepository.find({
+        where: {
+            userId: id,
+            date: Between(startDate, endDate)
+        }
+        });
+
+        return registers;
+    }
+
   async findAll() {
     return await this.registerRepository.find();
   }
