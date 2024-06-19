@@ -366,28 +366,24 @@ export class RegistersService {
   }
 
   calcBusinessDays(startDate: string, endDate: string): number {
-    //total of wekends by month : first day of the month [dom - sab]
-    const weekends: { [key: string]: number[] } = {
-      '31': [9, 8, 8, 8, 9, 10, 10],
-      '30': [9, 8, 8, 8, 8, 9, 10],
-      '29': [9, 8, 8, 8, 8, 8, 9],
-      '28': [8, 8, 8, 8, 8, 8, 8],
+    //total of business day by { month : first day of the month [dom - sab] }
+    const business: { [key: string]: number[] } = {
+      '31': [22, 23, 23, 23, 22, 21, 21],
+      '30': [21, 22, 22, 22, 22, 21, 20],
+      '29': [20, 21, 21, 21, 21, 21, 20],
+      '28': [20, 20, 20, 20, 20, 20, 20],
     };
 
-    const arrayEndDate = endDate.split('-');
+    const daysOfMonth = endDate.split('-')[2];
+
     const arrayStartDate = startDate.split('-');
     const firstDay: number = new Date(
       +arrayStartDate[0],
       +arrayStartDate[1] - 1,
       +arrayStartDate[2],
     ).getDay();
-    const daysOfMonth: string = arrayEndDate[2];
 
-    //(days of the month) - weekends
-    const businessDays =
-      parseInt(arrayEndDate[2]) - weekends[daysOfMonth][firstDay];
-
-    return businessDays;
+    return business[daysOfMonth][firstDay];
   }
 
   async getStatisticUserPerMonth(
