@@ -324,7 +324,15 @@ export class RegistersService {
     }
   }
 
-  async getStatisticUserPerDay(id: number, startDate: string, endDate: string) {
+  convertToTime(decimalTime: number) {
+    const hours = Math.floor(decimalTime);
+    const minutes = Math.floor((decimalTime - hours) * 60);
+    const seconds = Math.round(((decimalTime - hours) * 60 - minutes) * 60);
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  async statisticUserPerDay(id: number, startDate: string, endDate: string) {
     if (!startDate || !endDate)
       throw new BadRequestException('startDate y endDate is required');
     if (!id) throw new BadRequestException('id is required');
@@ -344,17 +352,22 @@ export class RegistersService {
       .getRawMany();
   }
 
-  async getStatisticUserPerMonth(
-    id: number,
-    startDate: string,
-    endDate: string,
-  ) {
+  async getStatisticUserPerDay(id: number, startDate: string, endDate: string) {
     if (!startDate || !endDate)
-      throw new BadRequestException('startMonth y endMonth is required');
+      throw new BadRequestException('startDate y endDate is required');
     if (!id) throw new BadRequestException('id is required');
 
+    const registers = await this.statisticUserPerDay(id, startDate, endDate);
+
+    for (const register of registers) {
+      register.hoursTotal = this.convertToTime(register.hoursTotal);
+    }
+    return registers;
+  }
+
+  calcBusinessDays(startDate: string, endDate: string): number {
     //total of wekends by month : first day of the month [dom - sab]
-    const wekends: { [key: string]: number[] } = {
+    const weekends: { [key: string]: number[] } = {
       '31': [9, 8, 8, 8, 9, 10, 10],
       '30': [9, 8, 8, 8, 8, 9, 10],
       '29': [9, 8, 8, 8, 8, 8, 9],
@@ -370,11 +383,35 @@ export class RegistersService {
     ).getDay();
     const daysOfMonth: string = arrayEndDate[2];
 
-    //(days of the month) - wekends
+    //(days of the month) - weekends
     const businessDays =
-      parseInt(arrayEndDate[2]) - wekends[daysOfMonth][firstDay];
+      parseInt(arrayEndDate[2]) - weekends[daysOfMonth][firstDay];
 
-    const registers = this.getStatisticUserPerDay(id, startDate, endDate);
+    return businessDays;
+  }
+
+  async getStatisticUserPerMonth(
+    id: number,
+    startDate: string,
+    endDate: string,
+  ) {
+    if (!startDate || !endDate)
+      throw new BadRequestException('startMonth y endMonth is required');
+    if (!id) throw new BadRequestException('id is required');
+
+    // const arrayEndDate = endDate.split('-');
+    // const arrayStartDate = startDate.split('-');
+    // const firstDay: number = new Date(
+    //   +arrayStartDate[0],
+    //   +arrayStartDate[1] - 1,
+    //   +arrayStartDate[2],
+    // ).getDay();
+    // const daysOfMonth: string = arrayEndDate[2];
+
+    //(days of the month) - wekends
+    const businessDays = this.calcBusinessDays(startDate, endDate);
+
+    const registers = this.statisticUserPerDay(id, startDate, endDate);
     let hours = 0;
     for (const register of await registers) {
       hours += parseFloat(register.hoursTotal);
@@ -382,13 +419,13 @@ export class RegistersService {
     }
     console.log(
       'hours: ' +
-        hours +
+        this.convertToTime(hours) +
         '\nbusinessDays: ' +
         businessDays +
         '\nMean: ' +
         hours / businessDays,
     );
-    return hours / businessDays;
+    return this.convertToTime(hours / businessDays);
   }
 
   async findAll() {
