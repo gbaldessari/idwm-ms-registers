@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Param, 
+  UsePipes, 
+  ValidationPipe, 
+  UseGuards, 
+  Delete
+} from '@nestjs/common';
 import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import { GetRegistersByRangeDateDto } from "./dto/get-registers-by-range-date.dto";
 import { AdminGetRegistersByRangeDateDto } from "./dto/admin-get-registers-by-range-date.dto";
-import { IsAdminGuard } from "./guards/isAdmin.guard";
 import { UpdateStartRegisterDto } from "./dto/update-start-register.dto";
 import { UpdateEndRegisterDto } from "./dto/update-end-register.dto";
 import { AdminCreateRegisterDto } from './dto/admin-create-resgister.dto';
@@ -20,50 +29,49 @@ export class RegistersController {
 
   @Post('/admin-create-register')
   @UsePipes(ValidationPipe)
-  async adminCreateRegister(@Body() adminCreateRegisterDto: AdminCreateRegisterDto) {
+  async adminCreateRegister(
+    @Body() adminCreateRegisterDto: AdminCreateRegisterDto
+  ) {
     return await this.registersService.adminCreateRegister(adminCreateRegisterDto);
   }
 
-
   @Get('/get-registers')
-  getAllRegisters() {
-    return this.registersService.findAll();
+  async getAllRegisters() {
+    return await this.registersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.registersService.findOne(+id);
+  @Get('get-register')
+  async findOne(@Param('id') id: string) {
+    return await this.registersService.findOne(+id);
   }
 
   @Post('/get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   async findRegisters(@Body() params: GetRegistersByRangeDateDto) {
-    return await this.registersService.findRegistersByRangeTime(
-      params.token,
-      params.startDate,
-      params.endDate);
+    return await this.registersService.findRegistersByRangeTime(params);
   }
 
   @Post('/admin-get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   async adminFindRegisters(@Body() params: AdminGetRegistersByRangeDateDto) {
-    return await this.registersService.adminFindRegistersByRangeTime(
-      params.id,
-      params.startDate,
-      params.endDate
-    );
+    return await this.registersService.adminFindRegistersByRangeTime(params);
   }
 
   @Post('/update-start-register')
   @UsePipes(ValidationPipe)
   async updateStartRegister(@Body() params: UpdateStartRegisterDto) {
-    return await this.registersService.updateStartRegister(params.startDate, params.id);
+    return await this.registersService.updateStartRegister(params);
   }
 
   @Post('/update-end-register')
   @UsePipes(ValidationPipe)
   async updateEndRegister(@Body() params: UpdateEndRegisterDto) {
-    return await this.registersService.updateEndRegister(params.endDate, params.id);
+    return await this.registersService.updateEndRegister(params);
+  }
+
+  @Delete('/delete-register')
+  async deleteRegister(@Body() id: number) {
+    return await this.registersService.remove(id);
   }
 
 }

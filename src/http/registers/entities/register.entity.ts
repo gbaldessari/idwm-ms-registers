@@ -63,4 +63,16 @@ export class Register {
   })
   longitudeEnd?: number;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  dailyHoursCalc?: boolean;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  monthHoursCalc?: boolean;
+
 }
