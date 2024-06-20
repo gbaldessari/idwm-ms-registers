@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   HttpStatus,
-  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -22,7 +21,13 @@ import {
 import { Cron } from '@nestjs/schedule';
 import { DailysHoursWorked } from './entities/dailyHours.entity';
 import { MonthHoursWorked } from './entities/monthHours.entity';
-import { differenceInMinutes } from 'date-fns';
+import { 
+  differenceInCalendarDays, 
+  startOfYear, 
+  endOfYear 
+} from 'date-fns';
+import { locale, tz } from 'moment-timezone';
+import 'moment/locale/es';
 
 @Injectable()
 export class RegistersService {
@@ -207,13 +212,15 @@ export class RegistersService {
   }
 
   async adminCreateRegister(adminCreateRegisterDto: AdminCreateRegisterDto) {
-    console.log(adminCreateRegisterDto);
-    if (!adminCreateRegisterDto.id) throw new Error('Id is required');
-    if (adminCreateRegisterDto.id == null || isNaN(adminCreateRegisterDto.id))
+    const { id } : number | any = adminCreateRegisterDto.id;
+    if (!id) throw new Error('Id is required');
+
+    if (!id) throw new Error('Id is required');
+    if (id == null || isNaN(id))
        throw new Error('User id not found');
     if (adminCreateRegisterDto.isEntry == null) throw new Error('isEntry is required');
 
-    const { id, isEntry, date, time } = adminCreateRegisterDto;
+    const { isEntry, date, time } = adminCreateRegisterDto;
 
     if (isEntry) {
       return this.adminRegisterEntry(id, date, time);
@@ -239,6 +246,7 @@ export class RegistersService {
       }
     });
 
+    console.log(registers)
     return registers;
   }
 
@@ -322,32 +330,30 @@ export class RegistersService {
     return result;
   }
 
-  @Cron('*/5 * * * *')
+  @Cron('* * * * *')
   async handleCront() {
-    const registers: Register[] = await this.registerRepository.
-    find({
+    const registers: Register[] = await this.registerRepository.find({
       where: {
         dailyHoursCalc: false,
-        timeEntry: Not(IsNull()),
         timeExit: Not(IsNull()),
         monthHoursCalc: false,
       }
     });
-    
+
     for (const register of registers) {
-      const date = new Date(register.date ?? '');
-      const dayName = date.toLocaleDateString('es-ES', { weekday: 'long' });
+      locale('es');
+      const date = tz(register.date ?? '', 'America/Santiago');
+      const dayName = date.format('dddd'); 
+      const timeEntry = tz(`${register.date}T${register.timeEntry}`, 'America/Santiago');
+      const timeExit = tz(`${register.date}T${register.timeExit}`, 'America/Santiago');
 
-      const timeEntry = new Date(`${register.date}T${register.timeEntry}`);
-      const timeExit = new Date(`${register.date}T${register.timeExit}`);
-
-      const totalMinutes = differenceInMinutes(timeExit, timeEntry);
+      const totalMinutes = timeExit.diff(timeEntry, 'minutes');
       const hours = totalMinutes / 60;
 
       const dailyHours: DailysHoursWorked = {
         idUser: register.userId,
         day: dayName,
-        date: register.date,
+        date: date.format(), 
         hoursWorked: parseFloat(hours.toFixed(2)),
       };
 
@@ -355,38 +361,80 @@ export class RegistersService {
       this.registerRepository.update(register.id ?? '', { dailyHoursCalc: true });
     }
 
-    const today = new Date();
-    const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    const today = tz('America/Santiago');
+    const tomorrow = tz('America/Santiago').add(1, 'days');
 
-    if (tomorrow.getMonth() !== today.getMonth()) {
-      const today = new Date();
-      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    // if (tomorrow.month() !== today.month()) {
+      const firstDayOfMonth = tz('America/Santiago').startOf('month');
+      const lastDayOfMonth = tz('America/Santiago').endOf('month');
 
       const result = await this.dailyHoursRepository
         .createQueryBuilder("dailyHours")
         .select("dailyHours.idUser")
         .addSelect("AVG(dailyHours.hoursWorked)", "averageHours")
         .where("dailyHours.date BETWEEN :start AND :end", { 
-          start: firstDayOfMonth, 
-          end: lastDayOfMonth })
+          start: firstDayOfMonth.format('YYYY-MM-DD'), 
+          end: lastDayOfMonth.format('YYYY-MM-DD') })
         .groupBy("dailyHours.idUser")
         .getRawMany();
       
+      console.log(result);
       for (const userHours of result) {
         const monthHours = {
           idUser: userHours.idUser,
-          month: today.getMonth() + 1,
-          year: today.getFullYear(),
+          month: today.month() + 1, 
+          year: today.year(),
           hoursWorked: parseFloat(userHours.averageHours.toFixed(2))
         }
 
         await this.monthHoursRepository.save(monthHours);
       }
+    // }
+  }
+
+  async getWeekHours(params: AdminGetRegistersByRangeDateDto) {
+    const { id, startDate, endDate } = params;
+
+    const daysDifference = differenceInCalendarDays(
+      new Date(endDate), 
+      new Date(startDate)
+    );
+
+    if (daysDifference !== 6) {
+      throw new Error('Weekly range must be 7 days.');
     }
 
+    const weekHours = await this.dailyHoursRepository.find({
+      where: {
+        idUser: id,
+        date: Between(startDate, endDate),
+      }
+    });
+
+    return weekHours;
+  }
+
+  async getYearHours(params: AdminGetRegistersByRangeDateDto) {
+    const { id, startDate, endDate } = params;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (!startOfYear(start) || !endOfYear(end)) {
+      throw new Error('The range must be a full year.');
+    }
+
+    const year = start.getFullYear();
+
+    const yearHours = await this.monthHoursRepository.find({
+      where: {
+        idUser: id,
+        year: year,
+      }
+    });
+
+    return yearHours;
   }
 
 }
-
 
