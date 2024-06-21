@@ -246,7 +246,6 @@ export class RegistersService {
       }
     });
 
-    console.log(registers)
     return registers;
   }
 
@@ -312,7 +311,6 @@ export class RegistersService {
   }
 
   async findOne(id: number) {
-    console.log(id);
     if (id == null || isNaN(id)) {
       throw new Error('ID cannot be null or undefined');
     }
@@ -444,17 +442,11 @@ export class RegistersService {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    console.log(start);
-    console.log(end);
-
     if (!startOfYear(start) || !endOfYear(end)) {
       throw new Error('The range must be a full year.');
     }
 
     const year = start.getUTCFullYear();
-
-    console.log(year);
-    console.log(typeof year);
 
     const yearHours = await this.monthHoursRepository.find({
       where: {
@@ -462,8 +454,6 @@ export class RegistersService {
         year: year,
       }
     });
-
-    console.log(yearHours);
 
     return yearHours;
   }
