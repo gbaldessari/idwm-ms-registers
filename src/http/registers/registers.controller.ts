@@ -32,19 +32,6 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
-  @Post('/admin-create-register')
-  @UsePipes(ValidationPipe)
-  async adminCreateRegister(
-    @Body() adminCreateRegisterDto: AdminCreateRegisterDto
-  ) {
-    try {
-      return await this.registersService.adminCreateRegister(adminCreateRegisterDto);
-    } catch(e) {
-      throw new Error("INTERNAL_SERVER_ERROR");
-    }
-  }
-
-  @UseGuards(IsAdminGuard)
   @Get('/get-registers')
   async getAllRegisters() {
     try {
@@ -85,11 +72,24 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
+  @Post('/admin-create-register')
+  @UsePipes(ValidationPipe)
+  async adminCreateRegister(
+    @Body() adminCreateRegisterDto: AdminCreateRegisterDto
+  ) {
+    try {
+      return await this.registersService.adminCreateRegister(adminCreateRegisterDto);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
+  }
+
+  @UseGuards(IsAdminGuard)
   @Post('/update-start-register')
   @UsePipes(ValidationPipe)
-  async updateStartRegister(@Body() params: UpdateRegisterDto) {
+  async updateStartRegister(@Body() updateRegisterDto: UpdateRegisterDto) {
     try {
-      return await this.registersService.updateStartRegister(params);
+      return await this.registersService.updateStartRegister(updateRegisterDto);
     } catch(e) {
       throw new Error("INTERNAL_SERVER_ERROR");
     }
@@ -117,7 +117,7 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
-  @Get('/get-week-hours')
+  @Get('/get-hours/week')
   async getWeekHours(@Body() params: AdminGetRegistersByRangeDateDto) {
     try {
       return await this.registersService.getWeekHours(params);
@@ -127,7 +127,7 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
-  @Get('/get-year-hours')
+  @Get('/get-hours/year')
   async getYearHours(@Body() params: AdminGetRegistersByRangeDateDto) {
     try {
       return await this.registersService.getYearHours(params);

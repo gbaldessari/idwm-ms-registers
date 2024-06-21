@@ -121,69 +121,6 @@ export class RegistersService {
     );
   }
 
-  async adminRegisterEntry(id: number, date: string, time: string) {
-    const createRegister: Register = {
-      userId: id,
-      date,
-      timeEntry: time,
-      timeExit: undefined,
-      isAdminEdited: true
-    };
-
-    await this.connection.transaction(
-      async (transactionalEntityManager: EntityManager): Promise<void> => {
-        try {
-          const register = this.registerRepository.create(createRegister);
-          const registerToUpdate = await transactionalEntityManager.findOne(Register, {
-            where: { userId: id, date },
-          });
-          if (registerToUpdate) {
-            throw new BadRequestException('Already exist a register of entry today');
-          }
-          await transactionalEntityManager.save(register);
-        } catch (error: unknown) {
-          throw new InternalServerErrorException('Error to register the entry');
-        }
-      },
-    );
-    return id;
-  }
-
-  async adminRegisterExit(id: number, date: string, time: string) {
-    await this.connection.transaction(
-      async (transactionalEntityManager: EntityManager): Promise<void> => {
-        try {
-          const registerToUpdate = await transactionalEntityManager.findOne(Register, {
-            where: { userId: id, date },
-          });
-
-          if (!registerToUpdate) {
-            throw new BadRequestException('You have not yet registered your entry today.');
-          }
-
-          if (registerToUpdate.timeExit !== null) {
-            throw new BadRequestException('Already exist a register of exit today');
-          }
-
-          registerToUpdate.timeExit = time;
-          registerToUpdate.isAdminEdited = true;
-
-          await transactionalEntityManager.update(
-            Register, 
-            registerToUpdate.id, 
-            registerToUpdate
-          );
-        } catch (e) {
-          if (e instanceof BadRequestException) {
-            throw e;
-          } else {
-            throw new InternalServerErrorException('Error to register the exit');
-          }
-        }
-      },
-    );
-  }
-
   async createRegister(createRegisterDto: CreateRegisterDto) {
     if (!createRegisterDto.token) throw new Error('Token is required');
     const { id } = await this.msUsersService
@@ -211,21 +148,44 @@ export class RegistersService {
   }
 
   async adminCreateRegister(adminCreateRegisterDto: AdminCreateRegisterDto) {
-    const { id } : number | any = adminCreateRegisterDto.id;
-    if (!id) throw new Error('Id is required');
-
-    if (!id) throw new Error('Id is required');
-    if (id == null || isNaN(id))
-       throw new Error('User id not found');
-    if (adminCreateRegisterDto.isEntry == null) throw new Error('isEntry is required');
-
-    const { isEntry, date, time } = adminCreateRegisterDto;
-
-    if (isEntry) {
-      return this.adminRegisterEntry(id, date, time);
-    } else {
-      return this.adminRegisterExit(id, date, time);
+    const id: number = adminCreateRegisterDto.id;
+    if (!id || id == null || isNaN(id)) {
+      throw new Error('Id is required');
     }
+
+    const date: string = adminCreateRegisterDto.date;
+
+    return this.adminRegisterCreation(id, date);
+  }
+
+  async adminRegisterCreation(userId: number, date: string) {
+    const createRegister: Register = {
+      userId,
+      date,
+      timeEntry: "00:00:00",
+      timeExit: "00:00:00",
+      isAdminEdited: true
+    };
+    let id: number = userId;
+
+    await this.connection.transaction(
+      async (transactionalEntityManager: EntityManager): Promise<void> => {
+        try {
+          const register = this.registerRepository.create(createRegister);
+          const registerToUpdate = await transactionalEntityManager.findOne(Register, {
+            where: { userId, date },
+          });
+          if (registerToUpdate) {
+            throw new BadRequestException('Already exist a register of entry today');
+          }
+          await transactionalEntityManager.save(register);
+          id = register.id || userId;
+        } catch (error: unknown) {
+          throw new InternalServerErrorException('Error to register the entry');
+        }
+      },
+    );
+    return id;
   }
 
   async findRegistersByRangeTime(params: GetRegistersByRangeDateDto) {
