@@ -21,7 +21,7 @@ export class IsAdminGuard implements CanActivate {
     const { isAdmin } = await this.msUsersService
       .getAccessToken(token)
       .toPromise();
-    if (!isAdmin) {
+    if (isAdmin === 3) {
       throw new ForbiddenException('Only admins can access');
     }
     return true;
