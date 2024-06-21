@@ -26,4 +26,9 @@ export class DailysHoursWorked {
     @Column('decimal', {nullable: false})
     hoursWorked?: number;
 
+    @Column({
+        type: 'boolean',
+        default: false,
+    })
+    monthHoursCalc?: boolean;
 }

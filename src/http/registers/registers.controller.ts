@@ -25,7 +25,11 @@ export class RegistersController {
   @Post('/create-register')
   @UsePipes(ValidationPipe)
   async createRegister(@Body() createRegisterDto: CreateRegisterDto) {
-    return await this.registersService.createRegister(createRegisterDto);
+    try {
+      return await this.registersService.createRegister(createRegisterDto);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
@@ -34,64 +38,104 @@ export class RegistersController {
   async adminCreateRegister(
     @Body() adminCreateRegisterDto: AdminCreateRegisterDto
   ) {
-    return await this.registersService.adminCreateRegister(adminCreateRegisterDto);
+    try {
+      return await this.registersService.adminCreateRegister(adminCreateRegisterDto);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Get('/get-registers')
   async getAllRegisters() {
-    return await this.registersService.findAll();
+    try {
+      return await this.registersService.findAll();
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @Get('/get-register')
   async findOne(@Param('id') id: string) {
-    return await this.registersService.findOne(+id);
+    try {
+      return await this.registersService.findOne(+id);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Post('/get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   async findRegisters(@Body() params: GetRegistersByRangeDateDto) {
-    return await this.registersService.findRegistersByRangeTime(params);
+    try {
+      return await this.registersService.findRegistersByRangeTime(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Post('/admin-get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   async adminFindRegisters(@Body() params: AdminGetRegistersByRangeDateDto) {
-    return await this.registersService.adminFindRegistersByRangeTime(params);
+    try {
+      return await this.registersService.adminFindRegistersByRangeTime(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Post('/update-start-register')
   @UsePipes(ValidationPipe)
   async updateStartRegister(@Body() params: UpdateStartRegisterDto) {
-    return await this.registersService.updateStartRegister(params);
+    try {
+      return await this.registersService.updateStartRegister(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Post('/update-end-register')
   @UsePipes(ValidationPipe)
   async updateEndRegister(@Body() params: UpdateEndRegisterDto) {
-    return await this.registersService.updateEndRegister(params);
+    try {
+      return await this.registersService.updateEndRegister(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Delete('/delete-register')
   async deleteRegister(@Body() id: number) {
-    return await this.registersService.remove(id);
+    try {
+      return await this.registersService.remove(id);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Get('/get-week-hours')
   async getWeekHours(@Body() params: AdminGetRegistersByRangeDateDto) {
-    return await this.registersService.getWeekHours(params);
+    try {
+      return await this.registersService.getWeekHours(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
   @UseGuards(IsAdminGuard)
   @Get('/get-year-hours')
   async getYearHours(@Body() params: AdminGetRegistersByRangeDateDto) {
-    return await this.registersService.getYearHours(params);
+    try {
+      return await this.registersService.getYearHours(params);
+    } catch(e) {
+      throw new Error("INTERNAL_SERVER_ERROR");
+    }
   }
 
 }

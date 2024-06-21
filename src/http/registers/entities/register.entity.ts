@@ -72,10 +72,4 @@ export class Register {
   })
   dailyHoursCalc?: boolean;
 
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  monthHoursCalc?: boolean;
-
 }

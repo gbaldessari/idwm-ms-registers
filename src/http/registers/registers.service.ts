@@ -330,13 +330,13 @@ export class RegistersService {
     return result;
   }
 
+  // @Cron('0 23 * * *')
   @Cron('* * * * *')
   async handleCront() {
     const registers: Register[] = await this.registerRepository.find({
       where: {
         dailyHoursCalc: false,
         timeExit: Not(IsNull()),
-        monthHoursCalc: false,
       }
     });
 
@@ -369,27 +369,51 @@ export class RegistersService {
       const lastDayOfMonth = tz('America/Santiago').endOf('month');
 
       const result = await this.dailyHoursRepository
-        .createQueryBuilder("dailyHours")
-        .select("dailyHours.idUser")
-        .addSelect("AVG(dailyHours.hoursWorked)", "averageHours")
-        .where("dailyHours.date BETWEEN :start AND :end", { 
-          start: firstDayOfMonth.format('YYYY-MM-DD'), 
-          end: lastDayOfMonth.format('YYYY-MM-DD') })
-        .groupBy("dailyHours.idUser")
-        .getRawMany();
-      
-      console.log(result);
+      .createQueryBuilder("dailyHours")
+      .select("dailyHours.idUser")
+      .addSelect("SUM(dailyHours.hoursWorked)", "totalHours")
+      .where("dailyHours.date BETWEEN :start AND :end", { 
+        start: firstDayOfMonth.format('YYYY-MM-DD'), 
+        end: lastDayOfMonth.format('YYYY-MM-DD') })
+      .andWhere("EXTRACT(ISODOW FROM dailyHours.date) NOT IN (6, 7)")
+      .andWhere("dailyHours.monthHoursCalc = :monthHoursCalc", { monthHoursCalc: false })
+      .groupBy("dailyHours.idUser")
+      .getRawMany();
+
+      const totalWorkdays = this.calculateWorkdays(firstDayOfMonth, lastDayOfMonth);
+
       for (const userHours of result) {
+        const totalHours = parseFloat(userHours.totalHours);
+        const averageHours = totalHours / totalWorkdays;
+
         const monthHours = {
-          idUser: userHours.idUser,
+          idUser: userHours.dailyHours_idUser,
           month: today.month() + 1, 
           year: today.year(),
-          hoursWorked: parseFloat(userHours.averageHours.toFixed(2))
-        }
+          hoursWorked: parseFloat(averageHours.toFixed(2))
+        };
 
         await this.monthHoursRepository.save(monthHours);
+        await this.dailyHoursRepository.update(
+          { idUser: userHours.dailyHours_idUser }, 
+          { monthHoursCalc: true } 
+        );
       }
     // }
+  }
+
+  calculateWorkdays(start: any, end: any) {
+    let count = 0;
+    let date = start.clone(); 
+  
+    while (date <= end) {
+      if (date.isoWeekday() < 6) { 
+        count++;
+      }
+      date = date.add(1, 'days');
+    }
+  
+    return count;
   }
 
   async getWeekHours(params: AdminGetRegistersByRangeDateDto) {
