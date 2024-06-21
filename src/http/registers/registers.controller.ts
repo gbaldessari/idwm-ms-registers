@@ -117,7 +117,7 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
-  @Get('/get-hours/week')
+  @Post('/get-hours-week')
   async getWeekHours(@Body() params: AdminGetRegistersByRangeDateDto) {
     try {
       return await this.registersService.getWeekHours(params);
@@ -127,7 +127,7 @@ export class RegistersController {
   }
 
   @UseGuards(IsAdminGuard)
-  @Get('/get-hours/year')
+  @Post('/get-hours-year')
   async getYearHours(@Body() params: AdminGetRegistersByRangeDateDto) {
     try {
       return await this.registersService.getYearHours(params);
