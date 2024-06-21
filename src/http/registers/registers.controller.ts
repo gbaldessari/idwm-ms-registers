@@ -13,8 +13,7 @@ import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import { GetRegistersByRangeDateDto } from "./dto/get-registers-by-range-date.dto";
 import { AdminGetRegistersByRangeDateDto } from "./dto/admin-get-registers-by-range-date.dto";
-import { UpdateStartRegisterDto } from "./dto/update-start-register.dto";
-import { UpdateEndRegisterDto } from "./dto/update-end-register.dto";
+import { UpdateRegisterDto } from "./dto/update-register.dto";
 import { AdminCreateRegisterDto } from './dto/admin-create-resgister.dto';
 import { IsAdminGuard } from './guards/isAdmin.guard';
 
@@ -64,7 +63,6 @@ export class RegistersController {
     }
   }
 
-  @UseGuards(IsAdminGuard)
   @Post('/get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   async findRegisters(@Body() params: GetRegistersByRangeDateDto) {
@@ -89,7 +87,7 @@ export class RegistersController {
   @UseGuards(IsAdminGuard)
   @Post('/update-start-register')
   @UsePipes(ValidationPipe)
-  async updateStartRegister(@Body() params: UpdateStartRegisterDto) {
+  async updateStartRegister(@Body() params: UpdateRegisterDto) {
     try {
       return await this.registersService.updateStartRegister(params);
     } catch(e) {
@@ -100,7 +98,7 @@ export class RegistersController {
   @UseGuards(IsAdminGuard)
   @Post('/update-end-register')
   @UsePipes(ValidationPipe)
-  async updateEndRegister(@Body() params: UpdateEndRegisterDto) {
+  async updateEndRegister(@Body() params: UpdateRegisterDto) {
     try {
       return await this.registersService.updateEndRegister(params);
     } catch(e) {

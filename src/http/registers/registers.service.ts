@@ -12,8 +12,7 @@ import { MsUsersService } from 'src/conection/ms-users.service';
 import { throwHttpException } from 'src/utils/exception';
 import { I18nService } from 'nestjs-i18n';
 import { AdminCreateRegisterDto } from './dto/admin-create-resgister.dto';
-import { UpdateStartRegisterDto } from './dto/update-start-register.dto';
-import { UpdateEndRegisterDto } from './dto/update-end-register.dto';
+import { UpdateRegisterDto } from './dto/update-register.dto';
 import { GetRegistersByRangeDateDto } from './dto/get-registers-by-range-date.dto';
 import { 
   AdminGetRegistersByRangeDateDto 
@@ -268,14 +267,14 @@ export class RegistersService {
     return registers;
   }
 
-  async updateStartRegister(params: UpdateStartRegisterDto) {
-    const { startDate, id } = params;
-    if (!startDate) throw new BadRequestException('startDate is required');
+  async updateStartRegister(params: UpdateRegisterDto) {
+    const { date, id } = params;
+    if (!date) throw new BadRequestException('startDate is required');
     if (!id) throw new BadRequestException('id is required');
 
     try {
       const result = await this.registerRepository.update(id, {
-        timeEntry: startDate,
+        timeEntry: date,
         isAdminEdited: true,
       });
       if (result.affected === 0) {
@@ -287,14 +286,14 @@ export class RegistersService {
     }
   }
 
-  async updateEndRegister(params: UpdateEndRegisterDto) {
-    const { endDate, id } = params;
-    if (!endDate) throw new BadRequestException('endDate is required');
+  async updateEndRegister(params: UpdateRegisterDto) {
+    const { date, id } = params;
+    if (!date) throw new BadRequestException('endDate is required');
     if (!id) throw new BadRequestException('id is required');
 
     try {
       const result = await this.registerRepository.update(id, {
-        timeExit: endDate,
+        timeExit: date,
         isAdminEdited: true,
       });
       if (result.affected === 0) {

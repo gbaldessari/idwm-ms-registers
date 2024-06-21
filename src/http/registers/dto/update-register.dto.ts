@@ -1,8 +1,7 @@
-import {IsNotEmpty, IsString} from "class-validator";
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
+import {IsNotEmpty, IsString} from 'class-validator';
 
-
-export class UpdateStartRegisterDto {
+export class UpdateRegisterDto {
     @ApiProperty({
         description: 'Token to mark the user entry or exit',
         type: Number,
@@ -16,7 +15,8 @@ export class UpdateStartRegisterDto {
         type: String,
         example: 'YYYY-MM-DDThh:mm:ssTZD',
     })
-    @IsString()
     @IsNotEmpty()
-    startDate!: string;
+    @IsString()
+    date!: string;
+
 }
