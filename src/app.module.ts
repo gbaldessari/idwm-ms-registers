@@ -14,6 +14,9 @@ import {
 import { RegistersModule } from './http/registers/registers.module';
 import * as path from 'path';
 import { Register } from './http/registers/entities/register.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { DailysHoursWorked } from './http/registers/entities/dailyHours.entity';
+import { MonthHoursWorked } from './http/registers/entities/monthHours.entity';
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { Register } from './http/registers/entities/register.entity';
       load: [baseConfig],
       validationSchema: configValidation,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +35,7 @@ import { Register } from './http/registers/entities/register.entity';
         port: configService.get<number>('TYPEORM_PORT'),
         password: configService.get<string>('TYPEORM_PASSWORD'),
         username: configService.get<string>('TYPEORM_USERNAME'),
-        entities: [Register],
+        entities: [Register, DailysHoursWorked, MonthHoursWorked],
         database: configService.get<string>('TYPEORM_DATABASE'),
         synchronize: configService.get<boolean>('TYPEORM_SYNCHRONIZE'),
         logging: true,

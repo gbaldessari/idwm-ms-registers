@@ -1,4 +1,7 @@
+import moment from 'moment';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -62,5 +65,11 @@ export class Register {
     nullable: true,
   })
   longitudeEnd?: number;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  dailyHoursCalc?: boolean;
 
 }
