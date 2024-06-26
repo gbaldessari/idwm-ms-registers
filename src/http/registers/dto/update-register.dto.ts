@@ -3,7 +3,7 @@ import {IsNotEmpty, IsString} from 'class-validator';
 
 export class UpdateRegisterDto {
     @ApiProperty({
-        description: 'Token to mark the user entry or exit',
+        description: 'ID of the register to update',
         type: Number,
         example: 8,
     })
@@ -11,12 +11,12 @@ export class UpdateRegisterDto {
     id!: number;
 
     @ApiProperty({
-        description: 'Start date of the register',
+        description: 'Time of the register to update',
         type: String,
-        example: 'YYYY-MM-DDThh:mm:ssTZD',
+        example: 'HH:MM:SS',
     })
     @IsNotEmpty()
     @IsString()
-    date!: string;
+    time!: string;
 
 }

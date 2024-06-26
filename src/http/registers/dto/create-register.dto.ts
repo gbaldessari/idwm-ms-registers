@@ -3,13 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRegisterDto {
   @ApiProperty({
-    description: 'Token to mark the user entry or exit',
-    type: String,
-  })
-  @IsNotEmpty()
-  token?: string;
-
-  @ApiProperty({
     description: 'Is entry or exit',
     type: Boolean,
     example: true,

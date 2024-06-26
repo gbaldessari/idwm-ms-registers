@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiProperty} from '@nestjs/swagger';
 
 export class AdminGetRegistersByRangeDateDto {
   @ApiProperty({
-    description: 'User token to obtain the records registers',
+    description: 'User ID',
     type: String,
     example: 8,
   })

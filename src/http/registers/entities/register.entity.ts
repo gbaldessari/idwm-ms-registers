@@ -1,7 +1,4 @@
-import moment from 'moment';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -14,19 +11,34 @@ export class Register {
   @PrimaryGeneratedColumn({ unsigned: true })
   id?: number;
 
-  @Column({ unsigned: true })
+  @Column({ 
+    unsigned: true,
+    nullable: false 
+  })
   userId?: number;
 
-  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
+  @Column({ 
+    type: 'date', 
+    default: () => 'CURRENT_DATE' 
+  })
   date?: string;
 
-  @Column({ type: 'time', default: () => 'CURRENT_TIME' })
+  @Column({ 
+    type: 'time', 
+    default: () => 'CURRENT_TIME' 
+  })
   timeEntry?: string;
 
-  @Column({ type: 'time', nullable: true })
+  @Column({ 
+    type: 'time', 
+    nullable: true 
+  })
   timeExit?: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ 
+    type: 'timestamp', 
+    default: () => 'CURRENT_TIMESTAMP' 
+  })
   createdAt?: string;
 
   @UpdateDateColumn({
