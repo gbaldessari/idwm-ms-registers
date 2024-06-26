@@ -4,7 +4,9 @@ import {
   Body, 
   UsePipes, 
   ValidationPipe, 
-  Headers
+  Headers,
+  Get,
+  Put
 } from '@nestjs/common';
 import { 
   ApiBody, 
@@ -55,7 +57,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/get-registers-by-rangeData')
+  @Get('/get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Get registers by date range' })
   @ApiBody({
@@ -79,7 +81,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/admin-get-registers-by-rangeData')
+  @Get('/admin-get-registers-by-rangeData')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Admin: Get registers by date range' })
   @ApiBody({
@@ -127,7 +129,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/update-start-register')
+  @Put('/update-start-register')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Update start of a register' })
   @ApiBody({
@@ -151,7 +153,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/update-end-register')
+  @Put('/update-end-register')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Update end of a register' })
   @ApiBody({
@@ -175,7 +177,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/get-hours-week')
+  @Get('/get-hours-week')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Get work hours for the week' })
   @ApiBody({
@@ -196,7 +198,7 @@ export class RegistersController {
     }
   }
 
-  @Post('/get-hours-year')
+  @Get('/get-hours-year')
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Get work hours for the year' })
   @ApiBody({
