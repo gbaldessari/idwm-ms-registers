@@ -401,7 +401,10 @@ export class RegistersService {
       },
     });
     if (registerToUpdate) {
-      return { message: 'Already exist a register of entry today' };
+      return { 
+        message: 'Already exist a register of entry today',
+        success: false,
+      };
     }
 
     await this.connection.transaction(
@@ -417,7 +420,10 @@ export class RegistersService {
         }
       },
     );
-    return { message: 'Entry registered successfully' };
+    return { 
+      message: 'Entry registered successfully',
+      success: true,
+    };
   }
 
   async registerExit(id: number, latitude: number, longitude: number) {
@@ -438,7 +444,10 @@ export class RegistersService {
     }
 
     if (registerToUpdate.timeExit !== null) {
-      return { message: 'Already exist a register of exit today' };
+      return { 
+        message: 'Already exist a register of exit today',
+        success: false,
+      };
     }
 
     registerToUpdate.timeExit = new Date().
@@ -463,7 +472,10 @@ export class RegistersService {
         }
       },
     );
-    return { message: 'Exit registered successfully' };
+    return { 
+      message: 'Exit registered successfully',
+      success: true, 
+    };
   }
 
   async adminRegisterCreation(userId: number, date: string) {
