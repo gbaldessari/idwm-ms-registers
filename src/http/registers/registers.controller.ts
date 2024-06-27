@@ -6,7 +6,8 @@ import {
   ValidationPipe, 
   Headers,
   Get,
-  Put
+  Put,
+  Query
 } from '@nestjs/common';
 import { 
   ApiBody, 
@@ -69,7 +70,7 @@ export class RegistersController {
   @ApiHeader({ name: 'Authorization', description: 'Bearer token' })
   async findRegisters(
     @Headers ('Authorization') token: string,
-    @Body() params: GetRegistersByRangeDateDto
+    @Query() params: GetRegistersByRangeDateDto
   ) {
     try {
       return await this.registersService.findRegistersByRangeTime(
@@ -93,7 +94,7 @@ export class RegistersController {
   @ApiHeader({ name: 'Authorization', description: 'Bearer token' })
   async adminFindRegisters(
     @Headers ('Authorization') token: string,
-    @Body() params: AdminGetRegistersByRangeDateDto
+    @Query() params: AdminGetRegistersByRangeDateDto
   ) {
     try {
       return await this.registersService.adminFindRegistersByRangeTime(
@@ -189,7 +190,7 @@ export class RegistersController {
   @ApiHeader({ name: 'Authorization', description: 'Bearer token' })
   async getWeekHours(
     @Headers ('Authorization') token: string,
-    @Body() params: AdminGetRegistersByRangeDateDto
+    @Query() params: AdminGetRegistersByRangeDateDto
   ) {
     try {
       return await this.registersService.getWeekHours(token, params);
@@ -210,7 +211,7 @@ export class RegistersController {
   @ApiHeader({ name: 'Authorization', description: 'Bearer token' })
   async getYearHours(
     @Headers ('Authorization') token: string,
-    @Body() params: AdminGetRegistersByRangeDateDto
+    @Query() params: AdminGetRegistersByRangeDateDto
   ) {
     try {
       return await this.registersService.getYearHours(token, params);
